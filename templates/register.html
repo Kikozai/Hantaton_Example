@@ -1,0 +1,66 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <link rel="shortcut icon" href="assets/star.ico" type="image/x-icon">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Регистрация</title>
+    <link rel="stylesheet" href="css/reset.css">
+    <link rel="stylesheet" href="css/fonts.css">
+    <link rel="stylesheet" href="css/index.css">
+    <link rel="stylesheet" href="css/register.css">
+
+    <script src="js/register.js" defer></script>
+</head>
+
+<body>
+    <main class="main">
+        <div class="window">
+            <h1 class="title">Регистрация</h1>
+            <form class="form" action="/login" method="POST">
+                <div class="inputs">
+                    <div class="important">
+                        <input type="text" name="firstName" class="text-input" placeholder="Имя">
+                        <span class="error opacity-0">Н</span>
+                    </div>
+                    <div class="important">
+                        <input type="text" name="secondName" class="text-input" placeholder="Фамилия">
+                        <span class="error opacity-0">Н</span>
+                    </div>
+                    <div>
+                        <input type="text" name="surname" class="text-input" placeholder="Отчество">
+                        <span class="error opacity-0">Н</span>
+                    </div>
+                    <div class="important">
+                        <input type="text" name="password" class="text-input" placeholder="Пароль">
+                        <span class="error opacity-0">Не менее 8 символов</span>
+                    </div>
+                    <div class="important">
+                        <input type="text" name="age" class="text-input" placeholder="Возраст">
+                        <span class="error opacity-0">Только числа, не превышающие 100</span>
+                    </div>
+                    <div class="important">
+                        <input type="text" name="sciences" class="text-input" placeholder="Области успеха" readonly>
+                        <div class="sciences-menu display-none">
+                            <ul></ul>
+                        </div>
+                        <span class="error opacity-0">Н</span>
+                    </div>
+                    <div class="important">
+                        <input type="text" name="email" class="text-input" placeholder="Почта">
+                        <span class="error opacity-0">Неправильный формат</span>
+                    </div>
+                    <div>
+                        <input type="text" name="phoneNumber" class="text-input" placeholder="Номер телефона">
+                        <span class="error opacity-0">Неправильный формат. Например: +7(987)654-32-10</span>
+                    </div>
+                    <span class="mark">* - поле обязательно для заполнения</span>
+                </div>
+                <a href="/login" class="login">Войти</a><button type="submit" class="button" disabled>Зарегистрироваться</button>
+            </form>
+        </div>
+    </main>
+</body>
+
+</html>
