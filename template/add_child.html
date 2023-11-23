@@ -1,0 +1,24 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <title>Добавить ребенка</title>
+  </head>
+  <body>
+    <h1>Добавить ребенка</h1>
+    <form action="/add_child" method="post">
+      <label for="full_name">ФИО:</label>
+      <input type="text" id="full_name" name="full_name" required><br><br>
+
+      <label for="age">Возраст:</label>
+      <input type="number" id="age" name="age" required><br><br>
+
+      <label for="talent_area">Область одаренности:</label>
+      <input type="text" id="talent_area" name="talent_area"><br><br>
+
+      <label for="contact_info">Контактная информация:</label>
+      <input type="text" id="contact_info" name="contact_info"><br><br>
+
+      <input type="submit" value="Добавить">
+    </form>
+  </body>
+</html>
