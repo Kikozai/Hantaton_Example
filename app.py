@@ -23,7 +23,7 @@ def index():
 
 @app.route("/login", methods=["GET"])
 def login():
-    return render_template("login.hbs")
+    return render_template("login.html")
 
 @app.route("/login", methods=["POST"])
 def login_post():
@@ -31,13 +31,13 @@ def login_post():
     password = request.form.get("password")
     error = request.form.get("error")
     if email == "valid_email" and password == "valid_password":
-        return render_template("child.hbs")
+        return render_template("child.html")
     else:
-        return render_template("login.hbs", email=email, password=password, error=True)
+        return render_template("login.html", email=email, password=password, error=True)
 
 @app.route("/register", methods=["GET"])
 def register():
-    return render_template("register.hbs")
+    return render_template("register.html")
 
 @app.route("/register", methods=["POST"])
 def register_post():
@@ -52,7 +52,7 @@ def register_post():
     error = request.form.get("error")
     existing_child = Child.query.filter_by(email=email).first()
     if existing_child:
-        return render_template("register.hbs", firstName=firstName, secondName=secondName, surname=surname,
+        return render_template("register.html", firstName=firstName, secondName=secondName, surname=surname,
                                password=password, age=age, sciences=sciences, email=email, phoneNumber=phoneNumber,
                                error=True)
     else:
@@ -60,7 +60,7 @@ def register_post():
                           sciences=sciences, email=email, phoneNumber=phoneNumber)
         db.session.add(new_child)
         db.session.commit()
-        return render_template("child.hbs")
+        return render_template("child.html")
 
 @app.route("/child", methods=["GET"])
 def child():
