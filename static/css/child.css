@@ -1,0 +1,51 @@
+header>.container {
+    height: 200px;
+    display: flex;
+    align-items: flex-end;
+    padding-bottom: 10px;
+    justify-content: space-between;
+}
+
+.information {
+    display: flex;
+    align-items: flex-end;
+    gap: 10px
+}
+
+.fullname {
+    font-weight: bold;
+    font-size: 2rem;
+}
+
+.full-information {
+    position: relative;
+}
+
+.full-information-button {
+    border-radius: 50%;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    width: 32px;
+    height: 32px;
+    background-color: var(--primary);
+    cursor: pointer;
+    color: #fff;
+    font-size: 1.5rem;
+}
+
+.full-information-window {
+    position: absolute;
+    bottom: 50%;
+    left: 52px;
+    width: max-content;
+}
+
+.display-none {
+    display: none;
+}
+
+.main {
+    background-color: var(--primary);
+    height: calc(100% - 200px);
+}
