@@ -3,7 +3,8 @@
 }
 
 :root {
-    --primary: #6B7CE8;
+    --primary: #005DE0;
+    --secondary: #E2E2E2;
 }
 
 .container {
