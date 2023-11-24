@@ -12,41 +12,41 @@ db = SQLAlchemy(app)
 
 # Модель ребёнка
 class Child(db.Model):
+    __tablename__ = 'child'
     id = db.Column(db.Integer, primary_key=True)
-    first_name = db.Column(db.String(100), nullable=False)
+    first_name = db.Column(db.String(100))
     second_name = db.Column(db.String(100))
-    surname = db.Column(db.String, nullable=False)
-    age = db.Column(db.Integer, nullable=False)
+    surname = db.Column(db.String(100))
+    age = db.Column(db.Integer)
     sciences = db.Column(db.String(100))
-    password = db.Column(db.String(100), nullable=False)
-    email = db.Column(db.String(100), nullable=False, unique=True)
-    phone_number = db.Column(db.String(20))
+    password = db.Column(db.String(100))
+    email = db.Column(db.String(100))
+    phone_number = db.Column(db.String(100))
+    achievements = db.relationship('Achievement', backref='child', lazy=True)
 
     def __init__(self, first_name, second_name, surname, age, sciences, password, email, phone_number):
         self.first_name = first_name
-        self.secondName = second_name
+        self.second_name = second_name
         self.surname = surname
         self.age = age
         self.sciences = sciences
         self.password = password
         self.email = email
-        self.phoneNumber = phone_number
+        self.phone_number = phone_number
 
 class Achievement(db.Model):
+    __tablename__ = 'achievement'
     id = db.Column(db.Integer, primary_key=True)
-    child_id = db.Column(db.Integer, db.ForeignKey('child.id'), nullable=False)
-    science = db.Column(db.String(100))
-    category = db.Column(db.String(100))
-    title = db.Column(db.String(100))
-    place = db.Column(db.String(100))
     child_id = db.Column(db.Integer, db.ForeignKey('child.id'))
+    title = db.Column(db.String(100))
+    description = db.Column(db.String(255))
+    date_achieved = db.Column(db.Date)
     
-    def __init__(self, child_id, science, category, title, place):
+    def __init__(self, child_id, title, description, date_achieved):
         self.child_id = child_id
-        self.science = science
-        self.category = category
         self.title = title
-        self.place = place
+        self.description = description
+        self.date_achieved = date_achieved
 
 
 @app.route("/", methods=["GET"])
@@ -163,7 +163,7 @@ def achievement():
     place = request.form.get('place')
 
     # Логика добавления нового достижения для ребенка с указанным ID
-    child = Child.query.get(id)
+    child = Child.query.filter_by(child_id=id).first()
     if child:
         new_achievement = Achievement(science=science, category=category, title=title, place=place)
         child.achievements.append(new_achievement)
