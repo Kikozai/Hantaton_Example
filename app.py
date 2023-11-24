@@ -22,7 +22,7 @@ class Child(db.Model):
     password = db.Column(db.String(100))
     email = db.Column(db.String(100))
     phone_number = db.Column(db.String(100))
-    achievements = db.relationship('Achievement', backref='child', lazy=True)
+    child_achievements = db.relationship('Achievement', backref='child', lazy=True)  # Изменено имя обратной ссылки
 
     def __init__(self, first_name, second_name, surname, age, sciences, password, email, phone_number):
         self.first_name = first_name
@@ -34,21 +34,22 @@ class Child(db.Model):
         self.email = email
         self.phone_number = phone_number
 
+
 class Achievement(db.Model):
     __tablename__ = 'achievement'
     id = db.Column(db.Integer, primary_key=True)
     child_id = db.Column(db.Integer, db.ForeignKey('child.id'))
+    science = db.Column(db.String(100))
+    category = db.Column(db.String(100))
     title = db.Column(db.String(100))
-    description = db.Column(db.String(255))
-    date_achieved = db.Column(db.Date)
-    
-    def __init__(self, child_id, title, description, date_achieved):
+    place = db.Column(db.String(100))
+
+    def __init__(self, child_id, science, category, title, place):
         self.child_id = child_id
+        self.science = science
+        self.category = category
         self.title = title
-        self.description = description
-        self.date_achieved = date_achieved
-
-
+        self.place = place
 @app.route("/", methods=["GET"])
 def index():
     if 'child_id' in session:
@@ -154,22 +155,20 @@ def search():
     return render_template("search.html", first_name=first_name, second_name=second_name, surname=surname,
                            sciences=sciences, minAge=min_age, maxAge=max_age, children=children, id=id)
 
-@app.route("/achievement", methods=["POST"])
-def achievement():
-    id = request.args.get('id')
-    science = request.form.get('science')
-    category = request.form.get('category')
-    title = request.form.get('title')
-    place = request.form.get('place')
+@app.route('/achievement', methods=['POST'])
+def add_achievement():
+    if request.method == 'POST':
+        science = request.form.get('science')
+        category = request.form.get('category')
+        title = request.form.get('title')
+        place = request.form.get('place')
+        child_id = request.form.get('id')
 
-    # Логика добавления нового достижения для ребенка с указанным ID
-    child = Child.query.filter_by(child_id=id).first()
-    if child:
-        new_achievement = Achievement(science=science, category=category, title=title, place=place)
-        child.achievements.append(new_achievement)
+        new_achievement = Achievement(child_id=child_id, science=science, category=category, title=title, place=place)
+        db.session.add(new_achievement)
         db.session.commit()
 
-    return redirect(url_for('child'))
+        return redirect(f'/child/{child_id}')
 
 if __name__ == "__main__":
     app.run()
