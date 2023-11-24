@@ -5,6 +5,8 @@ app = Flask(__name__)
 app.config['SQLALCHEMY_DATABASE_URI'] = 'postgresql://postgres:23675@localhost/users'
 db = SQLAlchemy(app)
 
+app.static_folder = 'public'
+
 # Модель ребёнка   
 class Child(db.Model):
     id = db.Column(db.Integer, primary_key=True)
