@@ -25,8 +25,8 @@
                         <p class="text">
                             <span>Возраст: {{ age }}</span>
                             <span>Области успеха: <span id="sciences">{{ sciences }}</span></span>
-                            <span>Почта: {% main %}{{ email }}{% else %}Скрыто{% endif %}</span>
-                            <span>Номер телефона: {% if phoneNumber %}{% main %}{{ phoneNumber }}{% else %}Скрыто{% endif %}{% else %}-{% endif %}</span>
+                            <span>Почта: {% if main %}{{ email }}{% else %}Скрыто{% endif %}</span>
+                            <span>Номер телефона: {% if phoneNumber %}{% if main %}{{ phoneNumber }}{% else %}Скрыто{% endif %}{% else %}-{% endif %}</span>
                         </p>
                     </div>
                 </div>
