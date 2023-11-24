@@ -1,5 +1,6 @@
 from flask import Flask, redirect, render_template, request, url_for, session
 from flask_sqlalchemy import SQLAlchemy
+from sqlalchemy.orm import relationship
 import os
 
 app = Flask(__name__)
@@ -8,27 +9,44 @@ app.config['SECRET_KEY'] = os.urandom(24)
 db = SQLAlchemy(app)
 
 
+
 # Модель ребёнка
 class Child(db.Model):
     id = db.Column(db.Integer, primary_key=True)
-    firstName = db.Column(db.String(100), nullable=False)
-    secondName = db.Column(db.String(100))
+    first_name = db.Column(db.String(100), nullable=False)
+    second_name = db.Column(db.String(100))
     surname = db.Column(db.String, nullable=False)
     age = db.Column(db.Integer, nullable=False)
     sciences = db.Column(db.String(100))
     password = db.Column(db.String(100), nullable=False)
     email = db.Column(db.String(100), nullable=False, unique=True)
-    phoneNumber = db.Column(db.String(20))
+    phone_number = db.Column(db.String(20))
 
-    def __init__(self, firstName, secondName, surname, age, sciences, password, email, phoneNumber):
-        self.firstName = firstName
-        self.secondName = secondName
+    def __init__(self, first_name, second_name, surname, age, sciences, password, email, phone_number):
+        self.first_name = first_name
+        self.secondName = second_name
         self.surname = surname
         self.age = age
         self.sciences = sciences
         self.password = password
         self.email = email
-        self.phoneNumber = phoneNumber
+        self.phoneNumber = phone_number
+
+class Achievement(db.Model):
+    id = db.Column(db.Integer, primary_key=True)
+    child_id = db.Column(db.Integer, db.ForeignKey('child.id'), nullable=False)
+    science = db.Column(db.String(100))
+    category = db.Column(db.String(100))
+    title = db.Column(db.String(100))
+    place = db.Column(db.String(100))
+    child_id = db.Column(db.Integer, db.ForeignKey('child.id'))
+    
+    def __init__(self, child_id, science, category, title, place):
+        self.child_id = child_id
+        self.science = science
+        self.category = category
+        self.title = title
+        self.place = place
 
 
 @app.route("/", methods=["GET"])
@@ -63,26 +81,38 @@ def register():
     if request.method == "GET":
         return render_template("register.html")
     elif request.method == "POST":
-        first_name = request.form.get('firstName')
-        second_name = request.form.get('secondName')
-        surname = request.form.get('surname')
-        password = request.form.get('password')
-        age = request.form.get('age')
-        sciences = request.form.getlist('sciences')
-        email = request.form.get('email')
-        phone_number = request.form.get('phoneNumber')
+        try:
+            first_name = request.form.get('firstName')
+            second_name = request.form.get('secondName')
+            surname = request.form.get('surname')
+            password = request.form.get('password')
+            age = request.form.get('age')
+            sciences = request.form.getlist('sciences')
+            email = request.form.get('email')
+            phone_number = request.form.get('phoneNumber')
 
-        existing_child = Child.query.filter_by(email=email).first()
+            existing_child = Child.query.filter_by(email=email).first()
 
-        if existing_child:
-            return render_template('register.html', error=True, firstName=first_name, secondName=second_name,
-                                   surname=surname, password=password, age=age, sciences=sciences,
-                                   email=email, phoneNumber=phone_number)
-        else:
-            new_child = Child(first_name, second_name, surname, age, sciences, password, email, phone_number)
-            db.session.add(new_child)
-            db.session.commit()
-            return redirect(url_for('login'))
+            if existing_child:
+                return render_template('register.html', error=True, firstName=first_name, secondName=second_name,
+                                       surname=surname, password=password, age=age, sciences=sciences,
+                                       email=email, phoneNumber=phone_number)
+            else:
+                new_child = Child(
+                    first_name=first_name,
+                    second_name=second_name,
+                    surname=surname,
+                    age=age,
+                    sciences=sciences,
+                    password=password,
+                    email=email,
+                    phone_number=phone_number
+                )
+                db.session.add(new_child)
+                db.session.commit()
+                return redirect(url_for('login'))
+        except Exception as e:
+            return f"Database error: {str(e)}"
 
 @app.route("/child")
 def child():
@@ -100,42 +130,42 @@ def search():
         id = None
 
     # Получаем параметры поиска из query запросов
-    first_name = request.args.get('firstName')
-    second_name = request.args.get('secondName')
+    first_name = request.args.get('first_name')
+    second_name = request.args.get('second_name')
     surname = request.args.get('surname')
-    sciences = request.args.get('sciences', '').split(',')
+    sciences = request.form.get('sciences')
     min_age = int(request.args.get('minAge') or 4)
     max_age = int(request.args.get('maxAge') or 25)
 
     # Обработка логики поиска
     children = Child.query.filter(
-        Child.first_name.ilike(f'%{first_name}%'),
-        Child.second_name.ilike(f'%{second_name}%'),
-        Child.surname.ilike(f'%{surname}%'),
-        Child.age.between(min_age, max_age),
-        Child.sciences.any(sciences)
+    Child.first_name.ilike(f'%{first_name}%'),
+    Child.second_name.ilike(f'%{second_name}%'),
+    Child.surname.ilike(f'%{surname}%'),
+    Child.age.between(min_age, max_age),
+    Child.sciences.ilike(f'%{sciences}%')
     ).all()
 
     # Возвращаем выражение
-    return render_template("search.html", firstName=first_name, secondName=second_name, surname=surname,
+    return render_template("search.html", first_naame=first_name, second_name=second_name, surname=surname,
                            sciences=', '.join(sciences), minAge=min_age, maxAge=max_age, children=children, id=id)
 
 @app.route("/achievement", methods=["POST"])
 def achievement():
-    id = request.args.get('id')  # Получение значения id из query параметров
+    id = request.args.get('id')
     science = request.form.get('science')
     category = request.form.get('category')
     title = request.form.get('title')
     place = request.form.get('place')
 
     # Логика добавления нового достижения для ребенка с указанным ID
-
-    return redirect(url_for('child'))
-    # Логика добавления нового достижения для ребенка с указанным ID
+    child = Child.query.get(id)
+    if child:
+        new_achievement = Achievement(science=science, category=category, title=title, place=place)
+        child.achievements.append(new_achievement)
+        db.session.commit()
 
     return redirect(url_for('child'))
 
 if __name__ == "__main__":
     app.run()
-
-
