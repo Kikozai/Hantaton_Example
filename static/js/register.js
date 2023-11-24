@@ -57,7 +57,8 @@ function passwordIsValid() {
 }
 
 function ageIsValid() {
-    return /^\d\d?$/.test(age.value);
+    let age = Number(age.value);
+    return 4 <= age && age <= 25;
 }
 
 function emailIsValud() {
