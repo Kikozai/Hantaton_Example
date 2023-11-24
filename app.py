@@ -111,12 +111,15 @@ def search():
 
 @app.route("/achievement", methods=["POST"])
 def achievement():
+    id = request.args.get('id')  # Получение значения id из query параметров
     science = request.form.get('science')
     category = request.form.get('category')
     title = request.form.get('title')
     place = request.form.get('place')
-    child_id = request.form.get('id')
 
+    # Логика добавления нового достижения для ребенка с указанным ID
+
+    return redirect(url_for('child'))
     # Логика добавления нового достижения для ребенка с указанным ID
 
     return redirect(url_for('child'))
