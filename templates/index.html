@@ -18,8 +18,12 @@
         <header class="header">
             <span class="links-text">Покажите себя этому миру!</span>
             <div class="links">
+                {% if id %}
+                <a href="/child?id={{ id }}">Личный кабинет</a>
+                {% else %}
                 <a href="/login" class="link">Войти</a>
                 <a href="/register" class="link">Зарегистрироваться</a>
+                {% endif %}
             </div>
         </header>
         
