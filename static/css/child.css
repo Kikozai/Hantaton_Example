@@ -184,5 +184,6 @@ td:nth-child(4n + 4) {
 }
 
 .button:disabled {
-    opacity: 75%;
+    opacity: 50%;
+    cursor: auto;
 }

@@ -58,7 +58,8 @@
 }
 
 .button:disabled {
-    opacity: 75%;
+    opacity: 50%;
+    cursor: auto;
 }
 
 input {
