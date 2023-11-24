@@ -15,43 +15,47 @@
 
 <body>
     <main class="main">
+        <dialog {% if error %}open{% endif %} class="dialog">
+            Пользователь с такой почтой уже существует
+        </dialog>
+
         <div class="window">
             <h1 class="title">Регистрация</h1>
             <form class="form" action="/register" method="POST">
                 <div class="inputs">
                     <div class="important">
-                        <input type="text" name="firstName" class="text-input" placeholder="Имя">
+                        <input type="text" name="firstName" value="{{ firstName }}" class="text-input" placeholder="Имя">
                         <span class="error opacity-0">Н</span>
                     </div>
                     <div class="important">
-                        <input type="text" name="secondName" class="text-input" placeholder="Фамилия">
+                        <input type="text" name="secondName" value="{{ secondName }}" class="text-input" placeholder="Фамилия">
                         <span class="error opacity-0">Н</span>
                     </div>
                     <div>
-                        <input type="text" name="surname" class="text-input" placeholder="Отчество">
+                        <input type="text" name="surname" value="{{ surname }}" class="text-input" placeholder="Отчество">
                         <span class="error opacity-0">Н</span>
                     </div>
                     <div class="important">
-                        <input type="text" name="password" class="text-input" placeholder="Пароль">
+                        <input type="text" name="password" value="{{ password }}" class="text-input" placeholder="Пароль">
                         <span class="error opacity-0">Не менее 8 символов</span>
                     </div>
                     <div class="important">
-                        <input type="text" name="age" class="text-input" placeholder="Возраст">
+                        <input type="text" name="age" value="{{ age }}" class="text-input" placeholder="Возраст">
                         <span class="error opacity-0">Только числа, не превышающие 100</span>
                     </div>
                     <div class="important">
-                        <input type="text" name="sciences" class="text-input" placeholder="Области успеха" readonly>
+                        <input type="text" name="sciences" value="{{ sciences }}" class="text-input" placeholder="Области успеха" readonly>
                         <div class="sciences-menu display-none">
                             <ul></ul>
                         </div>
                         <span class="error opacity-0">Н</span>
                     </div>
                     <div class="important">
-                        <input type="text" name="email" class="text-input" placeholder="Почта">
+                        <input type="text" name="email" value="{{ email }}" class="text-input" placeholder="Почта">
                         <span class="error opacity-0">Неправильный формат</span>
                     </div>
                     <div>
-                        <input type="text" name="phoneNumber" class="text-input" placeholder="Номер телефона">
+                        <input type="text" name="phoneNumber" value="{{ phoneNumber }}" class="text-input" placeholder="Номер телефона">
                         <span class="error opacity-0">Неправильный формат. Например: +7(987)654-32-10</span>
                     </div>
                     <span class="mark">* - поле обязательно для заполнения</span>

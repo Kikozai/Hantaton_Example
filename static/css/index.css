@@ -23,3 +23,12 @@
     outline: 2px solid var(--primary);
     outline-offset: 2px
 }
+
+.dialog {
+    left: 50%;
+    transform: translateX(-50%);
+    top: 25px;
+    background-color: white;
+    padding: 10px 15px;
+    border-radius: 15px;
+}

@@ -14,12 +14,16 @@
 
 <body>
     <main class="main">
+        <dialog {% if error %}open{% endif %} class="dialog">
+            Неправильный логин или пароль
+        </dialog>
+
         <div class="window">
             <h1 class="title">Вход</h1>
             <form class="form" action="/login" method="POST">
                 <div class="inputs">
-                    <input type="text" name="email" class="text-input" placeholder="Логин">
-                    <input type="text" name="password" class="text-input" placeholder="Пароль">
+                    <input type="text" name="email" value="{{ email }}" class="text-input" placeholder="Логин">
+                    <input type="text" name="password" value="{{ password }}" class="text-input" placeholder="Пароль">
                 </div>
                 <div class="links">
                     <a href="/" class="link">Главная</a>
