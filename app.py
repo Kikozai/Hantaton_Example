@@ -34,17 +34,17 @@ class Child(db.Model):
 @app.route("/", methods=["GET"])
 def index():
     if 'child_id' in session:
-        return redirect(url_for('child'))
+        id = session['child_id']
+        return render_template("index.html", id=id)
     else:
         return render_template("index.html")
-
-
-# Роут для входа в аккаунт
-@app.route('/login', methods=['GET', 'POST'])
+    
+    
+@app.route("/login", methods=["GET", "POST"])
 def login():
-    if request.method == 'GET':
-        return render_template('login.html', error=False)
-    elif request.method == 'POST':
+    if request.method == "GET":
+        return render_template("login.html")
+    elif request.method == "POST":
         email = request.form.get('email')
         password = request.form.get('password')
 
@@ -58,21 +58,11 @@ def login():
         else:
             return render_template('login.html', error=True, email=email)
 
-
-# Роут для выхода из аккаунта
-@app.route('/logout')
-def logout():
-    # Удаление ID ребенка из сессии
-    session.pop('child_id', None)
-    return redirect(url_for('index'))
-
-# Роут для регистрации
-@app.route('/register', methods=['GET', 'POST'])
+@app.route("/register", methods=["GET", "POST"])
 def register():
-    if request.method == 'GET':
-        return render_template('register.html')
-    elif request.method == 'POST':
-        # Получение данных для регистрации из запроса
+    if request.method == "GET":
+        return render_template("register.html")
+    elif request.method == "POST":
         first_name = request.form.get('firstName')
         second_name = request.form.get('secondName')
         surname = request.form.get('surname')
@@ -82,17 +72,56 @@ def register():
         email = request.form.get('email')
         phone_number = request.form.get('phoneNumber')
 
-        # Проверка, существует ли ребенок с указанным email
         existing_child = Child.query.filter_by(email=email).first()
 
         if existing_child:
-            # Ребенок с указанным email уже существует
             return render_template('register.html', error=True, firstName=first_name, secondName=second_name,
                                    surname=surname, password=password, age=age, sciences=sciences,
                                    email=email, phoneNumber=phone_number)
         else:
-            # Создание нового объекта ребенка
             new_child = Child(first_name, second_name, surname, age, sciences, password, email, phone_number)
             db.session.add(new_child)
             db.session.commit()
             return redirect(url_for('login'))
+
+@app.route("/child")
+def child():
+    if 'child_id' in session:
+        id = session['child_id']
+        return render_template("child.html", id=id, main=True)
+    else:
+        return render_template("child.html", main=False)
+
+@app.route("/search", methods=["GET", "POST"])
+def search():
+    if request.method == "GET":
+        return render_template("search.html")
+    elif request.method == "POST":
+        firstName = request.form.get('firstName')
+        secondName = request.form.get('secondName')
+        surname = request.form.get('surname')
+        sciences = request.form.get('sciences')
+        minAge = request.form.get('minAge')
+        maxAge = request.form.get('maxAge')
+
+        # Логика поиска ребенка по указанным параметрам
+
+        return render_template("search.html", firstName=firstName, secondName=secondName,
+                               surname=surname, sciences=sciences, minAge=minAge, maxAge=maxAge, child=child)
+
+@app.route("/achievement", methods=["POST"])
+def achievement():
+    science = request.form.get('science')
+    category = request.form.get('category')
+    title = request.form.get('title')
+    place = request.form.get('place')
+    child_id = request.form.get('id')
+
+    # Логика добавления нового достижения для ребенка с указанным ID
+
+    return redirect(url_for('child'))
+
+if __name__ == "__main__":
+    app.run()
+
+
