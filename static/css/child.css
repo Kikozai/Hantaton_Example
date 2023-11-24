@@ -37,8 +37,41 @@ header>.container {
 .full-information-window {
     position: absolute;
     bottom: 50%;
-    left: 52px;
+    left: 42px;
     width: max-content;
+    background-color: bisque;
+    padding: 12px;
+    border-radius: 12px;
+}
+
+.h2 {
+    font-weight: bold;
+    font-size: 1.1rem;
+}
+
+.text {
+    margin-top: 6px;
+    display: flex;
+    flex-direction: column;
+    gap: 4px;
+}
+
+.links {
+    display: flex;
+    gap: 20px;
+    align-items: center;
+}
+
+.link {
+    color: var(--primary);
+    text-decoration: underline;
+}
+
+.button {
+    border-radius: 5px;
+    background-color: var(--primary);
+    color: #fff;
+    padding: 10px;
 }
 
 .display-none {

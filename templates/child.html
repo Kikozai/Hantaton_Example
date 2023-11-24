@@ -24,11 +24,8 @@
                         <h2 class="h2">Обо мне</h2>
                         <p class="text">
                             <span>Возраст: {{ age }} лет</span>
-                            <br>
                             <span>Области успеха: {{ sciences }}</span>
-                            <br>
                             <span>Почта: {{ email }}</span>
-                            <br>
                             <span>Номер телефона: {% if phoneNumber %}{{ phoneNumber }}{% else %}-{% endif %}</span>
                         </p>
                     </div>
@@ -36,6 +33,9 @@
             </div>
             <div class="links">
                 <a href="/" class="link">Главная</a>
+                {% if main %}
+                <a href="/" class="button">Выйти</a>
+                {% endif %}
             </div>
         </div>
     </header>
@@ -64,6 +64,7 @@
             </table>
         </div>
     </main>
+    <div class="display-none" id="id">{{ id }}</div>
 </body>
 
 </html>
