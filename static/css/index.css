@@ -11,7 +11,8 @@
     margin: auto;
 }
 
-.text-input {
+.text-input,
+.select {
     border: 2px solid var(--primary);
     padding: 5px;
     border-radius: 5px;
@@ -19,7 +20,10 @@
 
 .text-input:hover,
 .text-input:active,
-.text-input:focus {
+.text-input:focus,
+.select:hover,
+.select:active
+.select:focus {
     outline: 2px solid var(--primary);
     outline-offset: 2px
 }

@@ -19,14 +19,14 @@
             <div class="information">
                 <h1 class="fullname">{{ secondName }} {{ firstName }} {{ surname }}</h1>
                 <div class="full-information">
-                    <div class="full-information-button">i</div>
-                    <div class="full-information-window">
-                        <h2 class="h2">Обо мне</h2>
+                    <button class="full-information-button">i</button>
+                    <div class="full-information-window display-none">
+                        <h6 class="h6">Обо мне</h6>
                         <p class="text">
-                            <span>Возраст: {{ age }} лет</span>
-                            <span>Области успеха: {{ sciences }}</span>
-                            <span>Почта: {{ email }}</span>
-                            <span>Номер телефона: {% if phoneNumber %}{{ phoneNumber }}{% else %}-{% endif %}</span>
+                            <span>Возраст: {{ age }}</span>
+                            <span>Области успеха: <span id="sciences">{{ sciences }}</span></span>
+                            <span>Почта: {% main %}{{ email }}{% else %}Скрыто{% endif %}</span>
+                            <span>Номер телефона: {% if phoneNumber %}{% main %}{{ phoneNumber }}{% else %}Скрыто{% endif %}{% else %}-{% endif %}</span>
                         </p>
                     </div>
                 </div>
@@ -34,37 +34,72 @@
             <div class="links">
                 <a href="/" class="link">Главная</a>
                 {% if main %}
-                <a href="/" class="button">Выйти</a>
+                <a href="/logout" class="button">Выйти</a>
                 {% endif %}
             </div>
         </div>
     </header>
     <main class="main">
+        <dialog class="dialog" id="form-window" popover>
+            <h2 class="h2">Опишите ваше достижение</h2>
+            <form action="/achievement" method="POST" class="form">
+                <div>
+                    <input type="text" name="title" class="text-input" id="title" placeholder="Название работы">
+                </div>
+                <div class="selects">
+                    <select name="science" id="science-select" class="select">
+                        <option value="">Веберите область</option>
+                    </select>
+                    <select name="category" class="select">
+                        <option value="">Выберите категорию</option>
+                        <option value="Олимпида">Олимпида</option>
+                        <option value="Конкурс">Конкурс</option>
+                        <option value="Проектная работа">Проектная работа</option>
+                    </select>
+                    <select name="place" class="select">
+                        <option value="">Выберите место</option>
+                        <option value="1">1 место</option>
+                        <option value="2">2 место</option>
+                        <option value="3">3 место</option>
+                    </select>
+                </div>
+                <button type="submit" id="add-button" disabled class="button">Добавить</button>
+            </form>
+        </dialog>
+
         <div class="container">
-            <table class="table">
-                <caption class="table">Мои достижения</caption>
-                <thead class="table-head">
-                    <tr>
-                        <th>Область</th>
-                        <th>Название</th>
-                        <th>Место</th>
-                        <th>Категория</th>
-                    </tr>
-                </thead>
-                <tbody>
-                    {% for achievement in achievements %}
-                    <tr>
-                        <td>{{ achievement.science }}</td>
-                        <td>{{ achievement.title }}</td>
-                        <td>{{ achievement.place }}</td>
-                        <td>{{ achievement.category }}</td>
-                    </tr>
-                    {% endfor %}
-                </tbody>
-            </table>
+            <div class="wrapper">
+                {% if len(achievements) %}
+                <h2 class="h2">Мое портфолио</h2>
+                <table>
+                    <thead>
+                        <tr>
+                            <th>Область</th>
+                            <th>Название</th>
+                            <th>Место</th>
+                            <th>Категория</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        {% for achievement in achievements %}
+                        <tr>
+                            <td>{{ achievement.science }}</td>
+                            <td>{{ achievement.title }}</td>
+                            <td>{{ achievement.place }}</td>
+                            <td>{{ achievement.category }}</td>
+                        </tr>
+                        {% endfor %}
+                    </tbody>
+                </table>
+                {% else %}
+                <h2 class="h2">Портфолио пока пустое</h2>
+                {% endif %}
+            </div>
+            {% if main %}
+            <button class="new-achievement-button" popovertarget="form-window">Добавить достижение</button>
+            {% endif %}
         </div>
     </main>
-    <div class="display-none" id="id">{{ id }}</div>
 </body>
 
 </html>
