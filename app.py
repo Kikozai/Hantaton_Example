@@ -122,7 +122,7 @@ def child():
     else:
         return render_template("child.html", main=False)
     
-@app.route("/search", methods=["GET"])
+app.route("/search", methods=["GET"])
 def search():
     if 'child_id' in session:
         id = session['child_id']
@@ -133,22 +133,26 @@ def search():
     first_name = request.args.get('first_name')
     second_name = request.args.get('second_name')
     surname = request.args.get('surname')
-    sciences = request.form.get('sciences')
+    sciences = request.args.getlist('sciences')  # Get as a list
     min_age = int(request.args.get('minAge') or 4)
     max_age = int(request.args.get('maxAge') or 25)
 
+    # Check if data is present for sciences
+    if not sciences:  # If no data is provided, set sciences as an empty list
+        sciences = []
+
     # Обработка логики поиска
     children = Child.query.filter(
-    Child.first_name.ilike(f'%{first_name}%'),
-    Child.second_name.ilike(f'%{second_name}%'),
-    Child.surname.ilike(f'%{surname}%'),
-    Child.age.between(min_age, max_age),
-    Child.sciences.ilike(f'%{sciences}%')
+        Child.first_name.ilike(f'%{first_name}%'),
+        Child.second_name.ilike(f'%{second_name}%'),
+        Child.surname.ilike(f'%{surname}%'),
+        Child.age.between(min_age, max_age),
+        Child.sciences.ilike(f'%{", ".join(sciences)}%')  # Join sciences as a comma-separated string
     ).all()
 
     # Возвращаем выражение
-    return render_template("search.html", first_naame=first_name, second_name=second_name, surname=surname,
-                           sciences=', '.join(sciences), minAge=min_age, maxAge=max_age, children=children, id=id)
+    return render_template("search.html", first_name=first_name, second_name=second_name, surname=surname,
+                           sciences=sciences, minAge=min_age, maxAge=max_age, children=children, id=id)
 
 @app.route("/achievement", methods=["POST"])
 def achievement():
