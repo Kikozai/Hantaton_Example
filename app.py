@@ -1,14 +1,14 @@
-from flask import Flask, redirect, render_template, request, url_for,session
+from flask import Flask, redirect, render_template, request, url_for, session
 from flask_sqlalchemy import SQLAlchemy
-import os 
+import os
 
 app = Flask(__name__)
-app.config['SQLALCHEMY_DATABASE_URI'] = 'postgresql://postgres:23675@localhost/child'  
-app.config['SECRET_KEY'] = os.urandom(24)  # Генирация ключа
+app.config['SQLALCHEMY_DATABASE_URI'] = 'postgresql://postgres:23675@localhost/child'
+app.config['SECRET_KEY'] = os.urandom(24)
 db = SQLAlchemy(app)
 
 
-# Модель ребёнка   
+# Модель ребёнка
 class Child(db.Model):
     id = db.Column(db.Integer, primary_key=True)
     firstName = db.Column(db.String(100), nullable=False)
@@ -29,10 +29,15 @@ class Child(db.Model):
         self.password = password
         self.email = email
         self.phoneNumber = phoneNumber
-        
+
+
 @app.route("/", methods=["GET"])
 def index():
-    return render_template("index.html")
+    if 'child_id' in session:
+        return redirect(url_for('child'))
+    else:
+        return render_template("index.html")
+
 
 # Роут для входа в аккаунт
 @app.route('/login', methods=['GET', 'POST'])
@@ -53,12 +58,13 @@ def login():
         else:
             return render_template('login.html', error=True, email=email)
 
+
 # Роут для выхода из аккаунта
 @app.route('/logout')
 def logout():
     # Удаление ID ребенка из сессии
     session.pop('child_id', None)
-    return redirect(url_for('login'))
+    return redirect(url_for('index'))
 
 # Роут для регистрации
 @app.route('/register', methods=['GET', 'POST'])
@@ -75,7 +81,7 @@ def register():
         sciences = request.form.getlist('sciences')
         email = request.form.get('email')
         phone_number = request.form.get('phoneNumber')
-           
+
         # Проверка, существует ли ребенок с указанным email
         existing_child = Child.query.filter_by(email=email).first()
 
@@ -87,35 +93,6 @@ def register():
         else:
             # Создание нового объекта ребенка
             new_child = Child(first_name, second_name, surname, age, sciences, password, email, phone_number)
-
-            # Добавление нового ребенка в базу данных
             db.session.add(new_child)
-            db.session.commit()  # Сохранение изменений в базе данных
-            return redirect(url_for('child'))
-
-            
-# Роут для страницы ребенка
-@app.route('/child', methods=['GET'])
-def child():
-    # Проверка, есть ли ID ребенка в сессии
-    if 'child_id' in session:
-        child_id = session['child_id']
-        # Получение данных ребенка из базы данных
-        child = Child.query.get(child_id)
-        return render_template('child.html', child=child, main=True)
-    else:
-        # Если ID ребенка отсутствует, перенаправление на страницу входа в аккаунт
-        return redirect(url_for('login'))
-
-@app.route("/search", methods=["GET"])
-def search():
-    firstName = request.args.get("firstName")
-    secondName = request.args.get("secondName")
-    surname = request.args.get("surname")
-    sciences = request.args.get("sciences")   
-# Поиск детей по предоставленным параметрам в базе данных
-    # Отображение результатов поиска с помощью search.hbs
-    return render_template("search.hbs")
-
-if __name__ == '__main__':
-    app.run()
+            db.session.commit()
+            return redirect(url_for('login'))
