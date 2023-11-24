@@ -57,8 +57,7 @@ function passwordIsValid() {
 }
 
 function ageIsValid() {
-    let age = Number(age.value);
-    return 4 <= age && age <= 25;
+    return 4 <= Number(age.value) && Number(age.value) <= 25;
 }
 
 function emailIsValud() {
@@ -71,7 +70,6 @@ function phoneNumberIsValid() {
 
 firstName.addEventListener('input', checkForm);
 secondName.addEventListener('input', checkForm);
-surname.addEventListener('input', checkForm);
 password.addEventListener('input', checkForm);
 age.addEventListener('input', checkForm);
 sciences.addEventListener('input', checkForm);
