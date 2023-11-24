@@ -92,31 +92,33 @@ def child():
     else:
         return render_template("child.html", main=False)
 
-@app.route("/search", methods=["GET", "POST"])
+@app.route("/search", methods=["GET"])
 def search():
-    if request.method == "GET":
-        return render_template("search.html")
-    elif request.method == "POST":
+        id = request.args.get('id')
         firstName = request.form.get('firstName')
         secondName = request.form.get('secondName')
         surname = request.form.get('surname')
-        sciences = request.form.get('sciences')
-        minAge = request.form.get('minAge')
-        maxAge = request.form.get('maxAge')
+        password = request.form.get('password')
+        age = request.form.get('age')
+        sciences = request.form.getlist('sciences')
+        email = request.form.get('email')
+        phone_number = request.form.get('phoneNumber')
 
-        # Логика поиска ребенка по указанным параметрам
+    # Логика поиска ребенка по указанным параметрам
 
-        return render_template("search.html", firstName=firstName, secondName=secondName,
-                               surname=surname, sciences=sciences, minAge=minAge, maxAge=maxAge, child=child)
+        return render_template("search.html", firstName=firstName, secondName=secondName, surname=surname,password = password, age=age, sciences=sciences, email=email, phoneNumber=phone_number)
 
 @app.route("/achievement", methods=["POST"])
 def achievement():
+    id = request.args.get('id')  # Получение значения id из query параметров
     science = request.form.get('science')
     category = request.form.get('category')
     title = request.form.get('title')
     place = request.form.get('place')
-    child_id = request.form.get('id')
 
+    # Логика добавления нового достижения для ребенка с указанным ID
+
+    return redirect(url_for('child'))
     # Логика добавления нового достижения для ребенка с указанным ID
 
     return redirect(url_for('child'))
