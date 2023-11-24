@@ -91,6 +91,8 @@ def register():
             # Добавление нового ребенка в базу данных
             db.session.add(new_child)
             db.session.commit()  # Сохранение изменений в базе данных
+            return redirect(url_for('child'))
+
             
 # Роут для страницы ребенка
 @app.route('/child', methods=['GET'])
@@ -100,10 +102,11 @@ def child():
         child_id = session['child_id']
         # Получение данных ребенка из базы данных
         child = Child.query.get(child_id)
-        return render_template('child.html', child=child, id=child_id)
+        return render_template('child.html', child=child, main=True)
     else:
         # Если ID ребенка отсутствует, перенаправление на страницу входа в аккаунт
         return redirect(url_for('login'))
+
 @app.route("/search", methods=["GET"])
 def search():
     firstName = request.args.get("firstName")
