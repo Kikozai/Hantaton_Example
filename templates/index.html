@@ -3,10 +3,10 @@
 
 <head>
     <meta charset="UTF-8">
-    <link rel="shortcut icon" href="assets/star.ico" type="image/x-icon">
+    <link rel="shortcut icon" href="{{ url_for('public', filename='assets/star.ico') }}" type="image/x-icon">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Главная</title>
-    <link rel="stylesheet" href="/css/reset.css">
+    <link rel="stylesheet" href="{{ url_for('public', filename='css/reset.css') }}">
     <link rel="stylesheet" href="/css/fonts.css">
     <link rel="stylesheet" href="/css/index.css">
     <link rel="stylesheet" href="/css/main.css">
