@@ -35,9 +35,9 @@ selects.forEach(select => {
 });
 
 document.querySelector('#new-achievement-button').addEventListener('click', () => {
-    document.querySelector('form-window').showModal();
+    document.querySelector('#form-window').showModal();
 });
 
 document.querySelector('#close-dialog-button').addEventListener('click', () => {
-    document.querySelector('form-window').close();
+    document.querySelector('#form-window').close();
 });
