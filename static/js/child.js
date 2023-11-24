@@ -33,3 +33,11 @@ titleInput.addEventListener('input', checkForm);
 selects.forEach(select => {
     select.addEventListener('change', checkForm);
 });
+
+document.querySelector('#new-achievement-button').addEventListener('click', () => {
+    document.querySelector('form-window').showModal();
+});
+
+document.querySelector('#close-dialog-button').addEventListener('click', () => {
+    document.querySelector('form-window').close();
+});

@@ -40,7 +40,7 @@
         </div>
     </header>
     <main class="main">
-        <dialog class="dialog" id="form-window" popover>
+        <dialog class="dialog" id="form-window">
             <h2 class="h2">Опишите ваше достижение</h2>
             <form action="/achievement?id={{ id }}" method="POST" class="form">
                 <div>
@@ -63,7 +63,10 @@
                         <option value="3">3 место</option>
                     </select>
                 </div>
-                <button type="submit" id="add-button" disabled class="button">Добавить</button>
+                <div class="buttons">
+                    <button class="button" id="close-dialog-button">Отмена</button>
+                    <button type="submit" id="add-button" disabled class="button">Добавить</button>
+                </div>
             </form>
         </dialog>
 
@@ -96,7 +99,7 @@
                 {% endif %}
             </div>
             {% if main %}
-            <button class="new-achievement-button" popovertarget="form-window">Добавить достижение</button>
+            <button class="new-achievement-button" id="new-achievement-button">Добавить достижение</button>
             {% endif %}
         </div>
     </main>

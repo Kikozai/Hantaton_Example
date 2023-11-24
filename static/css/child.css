@@ -179,8 +179,10 @@ td:nth-child(4n + 4) {
     gap: 15px
 }
 
-.button {
-    align-self: flex-end;
+.buttons {
+    display: flex;
+    gap: 8px;
+    justify-content: flex-end;
 }
 
 .button:disabled {
