@@ -36,7 +36,7 @@ sciences.addEventListener('click', () => {
     sciencesMenu.classList.toggle('display-none');
 });
 
-function formIsValid() {
+function checkForm() {
     if (
         firstName.value.length != 0 &&
         secondName.value.length != 0 &&
@@ -68,14 +68,14 @@ function phoneNumberIsValid() {
     return /^\+\d\(\d\d\d\)\d\d\d-\d\d-\d\d$/.test(phoneNumber.value)
 }
 
-firstName.addEventListener('input', formIsValid);
-secondName.addEventListener('input', formIsValid);
-surname.addEventListener('input', formIsValid);
-password.addEventListener('input', formIsValid);
-age.addEventListener('input', formIsValid);
-sciences.addEventListener('input', formIsValid);
-email.addEventListener('input', formIsValid);
-phoneNumber.addEventListener('input', formIsValid);
+firstName.addEventListener('input', checkForm);
+secondName.addEventListener('input', checkForm);
+surname.addEventListener('input', checkForm);
+password.addEventListener('input', checkForm);
+age.addEventListener('input', checkForm);
+sciences.addEventListener('input', checkForm);
+email.addEventListener('input', checkForm);
+phoneNumber.addEventListener('input', checkForm);
 
 password.addEventListener('change', () => {
     if (passwordIsValid() || password.value.length == 0) {
