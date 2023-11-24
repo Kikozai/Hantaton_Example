@@ -91,22 +91,41 @@ def child():
         return render_template("child.html", id=id, main=True)
     else:
         return render_template("child.html", main=False)
-
+    
 @app.route("/search", methods=["GET"])
 def search():
-        id = request.args.get('id')
-        firstName = request.form.get('firstName')
-        secondName = request.form.get('secondName')
-        surname = request.form.get('surname')
-        password = request.form.get('password')
-        age = request.form.get('age')
-        sciences = request.form.getlist('sciences')
-        email = request.form.get('email')
-        phone_number = request.form.get('phoneNumber')
+    if 'child_id' in session:
+        id = session['child_id']
+        return redirect(url_for('search', id=id))
 
-    # Логика поиска ребенка по указанным параметрам
+    # Получаем параметры поиска из query запросов
+    first_name = request.args.get('firstName')
+    second_name = request.args.get('secondName')
+    surname = request.args.get('surname')
+    sciences = request.args.get('sciences', '').split(',')
+    min_age = int(request.args.get('minAge', 4))
+    max_age = int(request.args.get('maxAge', 25))
 
-        return render_template("search.html", firstName=firstName, secondName=secondName, surname=surname,password = password, age=age, sciences=sciences, email=email, phoneNumber=phone_number)
+    # Ограничение по возврасту: минимальный 4, максимальный 25
+    min_age = max(min_age, 4)
+    max_age = min(max_age, 25)
+
+    # Проверка на корректность ввода возраста
+    if min_age > max_age:
+        min_age, max_age = max_age, min_age
+
+    # Обработка логики поиска
+    children = Child.query.filter(
+        Child.first_name.ilike(f'%{first_name}%'),
+        Child.second_name.ilike(f'%{second_name}%'),
+        Child.surname.ilike(f'%{surname}%'),
+        Child.age.between(min_age, max_age),
+        Child.sciences.any(sciences)
+    ).all()
+
+    # Возвращаем выражение
+    return render_template("search.html", firstName=first_name, secondName=second_name, surname=surname,
+                           sciences=', '.join(sciences), minAge=min_age, maxAge=max_age, children=children)
 
 @app.route("/achievement", methods=["POST"])
 def achievement():
