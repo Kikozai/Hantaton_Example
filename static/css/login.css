@@ -31,17 +31,23 @@
     gap: 10px;
 }
 
-.register {
+.links {
+    padding-top: 20px;
+    display: flex;
+    justify-content: flex-end;
+    align-items: center;
+    gap: 10px;
+}
+
+.link {
     color: var(--primary);
     text-decoration: underline;
 }
 
 .button {
-    margin-left: 10px;
     align-self: flex-end;
     color: #fff;
     background-color: var(--primary);
     padding: 10px;
     border-radius: 5px;
-    margin-top: 20px;
 }
