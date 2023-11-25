@@ -1,59 +1,40 @@
-from flask import Flask, redirect, render_template, request, url_for, session, abort
+from flask import Flask, flash, redirect, render_template, request, url_for, session
 from flask_sqlalchemy import SQLAlchemy
-from sqlalchemy.orm import relationship
 import os
-
 app = Flask(__name__)
 app.config['SQLALCHEMY_DATABASE_URI'] = 'postgresql://postgres:23675@localhost/child'
 app.config['SECRET_KEY'] = os.urandom(24)
-app.template_folder = 'templates'
 db = SQLAlchemy(app)
-
 # Модель ребёнка
 class Child(db.Model):
-    __tablename__ = 'child'
-    id = db.Column(db.Integer, primary_key=True)
-    first_name = db.Column(db.String(100))
+    id = db.Column(db.Integer, primary_key=True, autoincrement=True)
+    first_name = db.Column(db.String(100), nullable=False)
     second_name = db.Column(db.String(100))
-    surname = db.Column(db.String(100))
-    age = db.Column(db.Integer)
-    sciences = db.Column(db.String(100))
-    password = db.Column(db.String(100))
-    email = db.Column(db.String(100))
-    phone_number = db.Column(db.String(100))
-    child_achievements = db.relationship('Achievement', backref='child', lazy=True)  # Изменено имя обратной ссылки
-    
-    def to_dict(self):
-       return {
-            'id': self.id,
-            'first_name': self.first_name,
-            'second_name': self.second_name,
-            'surname': self.surname,
-            'age': self.age,
-            'sciences': self.sciences,
-            'email': self.email,
-            'phone_number': self.phone_number
-        }
-
+    surname = db.Column(db.String, nullable=False)
+    age = db.Column(db.Integer, nullable=False)
+    sciences = db.Column(db.ARRAY(db.String))
+    password = db.Column(db.String(100), nullable=False)
+    email = db.Column(db.String(100), nullable=False, unique=True)
+    phone_number = db.Column(db.String(20))
     def __init__(self, first_name, second_name, surname, age, sciences, password, email, phone_number):
         self.first_name = first_name
-        self.second_name = second_name
+        self.second_Name = second_name
         self.surname = surname
         self.age = age
         self.sciences = sciences
         self.password = password
         self.email = email
-        self.phone_number = phone_number
-
-
+        self.phone_Number = phone_number
+        
 class Achievement(db.Model):
-    __tablename__ = 'achievement'
     id = db.Column(db.Integer, primary_key=True)
-    child_id = db.Column(db.Integer, db.ForeignKey('child.id'))
-    science = db.Column(db.String(100))
-    category = db.Column(db.String(100))
-    title = db.Column(db.String(100))
-    place = db.Column(db.String(100))
+    child_id = db.Column(db.Integer, db.ForeignKey('child.id'), nullable=False)
+    science = db.Column(db.String(255), nullable=False)
+    category = db.Column(db.String(255), nullable=False)
+    title = db.Column(db.String(255), nullable=False)
+    place = db.Column(db.String(255), nullable=False)
+
+    # Опционально, вы можете добавить дополнительные поля для даты, описания и т.д.
 
     def __init__(self, child_id, science, category, title, place):
         self.child_id = child_id
@@ -61,6 +42,7 @@ class Achievement(db.Model):
         self.category = category
         self.title = title
         self.place = place
+        
 @app.route("/", methods=["GET"])
 def index():
     if 'child_id' in session:
@@ -77,10 +59,8 @@ def login():
     elif request.method == "POST":
         email = request.form.get('email')
         password = request.form.get('password')
-
         # Проверка, существует ли ребенок с указанным email и паролем
         child = Child.query.filter_by(email=email, password=password).first()
-
         if child:
             # Сохранение ID ребенка в сессии
             session['child_id'] = child.id
@@ -88,122 +68,77 @@ def login():
         else:
             return render_template('login.html', error=True, email=email)
         
-@app.route("/logout")
-def logout():
-    # Удаляем идентификатор ребенка из сессии
-    session.pop('child_id', None)
-    # Перенаправляем пользователя на страницу входа или другую страницу
-    return redirect(url_for('index'))
-
 @app.route("/register", methods=["GET", "POST"])
 def register():
     if request.method == "GET":
         return render_template("register.html")
     elif request.method == "POST":
-        try:
-            first_name = request.form.get('firstName')
-            second_name = request.form.get('secondName')
-            surname = request.form.get('surname')
-            password = request.form.get('password')
-            age = request.form.get('age')
-            sciences = request.form.getlist('sciences')
-            email = request.form.get('email')
-            phone_number = request.form.get('phoneNumber')
-
-            existing_child = Child.query.filter_by(email=email).first()
-
-            if existing_child:
-                return render_template('register.html', error=True, firstName=first_name, secondName=second_name,
-                                       surname=surname, password=password, age=age, sciences=sciences,
-                                       email=email, phoneNumber=phone_number)
-            else:
-                new_child = Child(
-                    first_name=first_name,
-                    second_name=second_name,
-                    surname=surname,
-                    age=age,
-                    sciences=sciences,
-                    password=password,
-                    email=email,
-                    phone_number=phone_number
-                )
-                db.session.add(new_child)
-                db.session.commit()
-                return redirect(url_for('login'))
-        except Exception as e:
-            return f"Database error: {str(e)}"
-
-from flask import render_template
-
+        first_name = request.form.get('firstName')
+        second_name = request.form.get('secondName')
+        surname = request.form.get('surname')
+        password = request.form.get('password')
+        age = request.form.get('age')
+        sciences = request.form.getlist('sciences')
+        email = request.form.get('email')
+        phone_number = request.form.get('phoneNumber') or 'не указан'
+        existing_child = Child.query.filter_by(email=email).first()
+        if existing_child:
+            return render_template('register.html', error=True, firstName=first_name, secondName=second_name,
+                                   surname=surname, password=password, age=age, sciences=sciences,
+                                   email=email, phoneNumber=phone_number)
+        else:
+            new_child = Child(first_name, second_name, surname, age, sciences, password, email, phone_number)
+            db.session.add(new_child)
+            db.session.commit()  
+        return redirect(url_for('login'))
+        
 @app.route("/child")
 def child():
-    # Проверяем, есть ли идентификатор ребенка в сессии
-    if 'child_id' in session:
-        child_id = session['child_id']
-        # Получаем данные ребенка из базы данных
-        child = Child.query.get(child_id)
-        if child:
-            # Создаем словарь с данными о ребенке, исключая пароль
-            child_data = {
-                'first_name': child.first_name,
-                'second_name': child.second_name,
-                'surname': child.surname,
-                'age': child.age,
-                'sciences': child.sciences,
-                'email': child.email,
-                'phone_number': child.phone_number
-            }
-            # Рендерим шаблон child.html с данными ребенка и флагом main
-            return render_template('child.html', child=child_data, main=True)
-    # Если пользователь не входит в свой личный кабинет
-    return render_template('child.html', main=False)
-    
-app.route("/search", methods=["GET"])
-def search():
     if 'child_id' in session:
         id = session['child_id']
+        return render_template("child.html", id=id, main=True)
     else:
-        id = None
+        return render_template("child.html", main=False)
+    
+@app.route("/search", methods=["GET", "POST"])
+def search():
+    if request.method == "GET":
+        return render_template("search.html")
+    elif request.method == "POST":
+        firstName = request.form.get('firstName')
+        secondName = request.form.get('secondName')
+        surname = request.form.get('surname')
+        sciences = request.form.get('sciences')
+        minAge = request.form.get('minAge')
+        maxAge = request.form.get('maxAge')
+        # Логика поиска ребенка по указанным параметрам
+        return render_template("search.html", firstName=firstName, secondName=secondName,
+                               surname=surname, sciences=sciences, minAge=minAge, maxAge=maxAge, child=child)
 
-    # Получаем параметры поиска из query запросов
-    first_name = request.args.get('first_name')
-    second_name = request.args.get('second_name')
-    surname = request.args.get('surname')
-    sciences = request.args.getlist('sciences')  # Get as a list
-    min_age = int(request.args.get('minAge') or 4)
-    max_age = int(request.args.get('maxAge') or 25)
+@app.route("/achievement", methods=["POST"])
+def achievement():
+    # Получить необходимую информацию из тела запроса
+    data = request.get_json()
+    child_id = data.get('child_id')
+    science = data.get('science')
+    category = data.get('category')
+    title = data.get('title')
+    place = data.get('place')
 
-    # Check if data is present for sciences
-    if not sciences:  # If no data is provided, set sciences as an empty list
-        sciences = []
+    # Создать экземпляр модели Achievement с предоставленной информацией
+    achievement = Achievement(child_id=child_id, science=science, category=category, title=title, place=place)
 
-    # Обработка логики поиска
-    children = Child.query.filter(
-        Child.first_name.ilike(f'%{first_name}%'),
-        Child.second_name.ilike(f'%{second_name}%'),
-        Child.surname.ilike(f'%{surname}%'),
-        Child.age.between(min_age, max_age),
-        Child.sciences.ilike(f'%{", ".join(sciences)}%')  # Join sciences as a comma-separated string
-    ).all()
-
-    # Возвращаем выражение
-    return render_template("search.html", first_name=first_name, second_name=second_name, surname=surname,
-                           sciences=sciences, minAge=min_age, maxAge=max_age, children=children, id=id)
-
-@app.route('/achievement', methods=['POST'])
-def add_achievement():
-    if request.method == 'POST':
-        science = request.form.get('science')
-        category = request.form.get('category')
-        title = request.form.get('title')
-        place = request.form.get('place')
-        child_id = request.form.get('id')
-
-        new_achievement = Achievement(child_id=child_id, science=science, category=category, title=title, place=place)
-        db.session.add(new_achievement)
+    try:
+        # Сохранить достижение в базе данных
+        db.session.add(achievement)
         db.session.commit()
 
-        return redirect(f'/child/{child_id}')
+        flash('Достижение успешно добавлено', 'success')
+    except Exception as e:
+        flash('Ошибка при добавлении достижения: ' + str(e), 'error')
+
+    # Перенаправление на личный кабинет ребенка
+    return redirect(url_for('child'))
 
 if __name__ == "__main__":
     app.run()
