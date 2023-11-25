@@ -1,4 +1,4 @@
-from flask import Flask, redirect, render_template, request, url_for, session
+from flask import Flask, redirect, render_template, request, url_for, session, abort
 from flask_sqlalchemy import SQLAlchemy
 from sqlalchemy.orm import relationship
 import os
@@ -6,9 +6,8 @@ import os
 app = Flask(__name__)
 app.config['SQLALCHEMY_DATABASE_URI'] = 'postgresql://postgres:23675@localhost/child'
 app.config['SECRET_KEY'] = os.urandom(24)
+app.template_folder = 'templates'
 db = SQLAlchemy(app)
-
-
 
 # Модель ребёнка
 class Child(db.Model):
@@ -23,6 +22,18 @@ class Child(db.Model):
     email = db.Column(db.String(100))
     phone_number = db.Column(db.String(100))
     child_achievements = db.relationship('Achievement', backref='child', lazy=True)  # Изменено имя обратной ссылки
+    
+    def to_dict(self):
+       return {
+            'id': self.id,
+            'first_name': self.first_name,
+            'second_name': self.second_name,
+            'surname': self.surname,
+            'age': self.age,
+            'sciences': self.sciences,
+            'email': self.email,
+            'phone_number': self.phone_number
+        }
 
     def __init__(self, first_name, second_name, surname, age, sciences, password, email, phone_number):
         self.first_name = first_name
@@ -76,6 +87,13 @@ def login():
             return redirect(url_for('child'))
         else:
             return render_template('login.html', error=True, email=email)
+        
+@app.route("/logout")
+def logout():
+    # Удаляем идентификатор ребенка из сессии
+    session.pop('child_id', None)
+    # Перенаправляем пользователя на страницу входа или другую страницу
+    return redirect(url_for('index'))
 
 @app.route("/register", methods=["GET", "POST"])
 def register():
@@ -115,13 +133,30 @@ def register():
         except Exception as e:
             return f"Database error: {str(e)}"
 
+from flask import render_template
+
 @app.route("/child")
 def child():
+    # Проверяем, есть ли идентификатор ребенка в сессии
     if 'child_id' in session:
-        id = session['child_id']
-        return render_template("child.html", id=id, main=True)
-    else:
-        return render_template("child.html", main=False)
+        child_id = session['child_id']
+        # Получаем данные ребенка из базы данных
+        child = Child.query.get(child_id)
+        if child:
+            # Создаем словарь с данными о ребенке, исключая пароль
+            child_data = {
+                'first_name': child.first_name,
+                'second_name': child.second_name,
+                'surname': child.surname,
+                'age': child.age,
+                'sciences': child.sciences,
+                'email': child.email,
+                'phone_number': child.phone_number
+            }
+            # Рендерим шаблон child.html с данными ребенка и флагом main
+            return render_template('child.html', child=child_data, main=True)
+    # Если пользователь не входит в свой личный кабинет
+    return render_template('child.html', main=False)
     
 app.route("/search", methods=["GET"])
 def search():
