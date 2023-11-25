@@ -1,0 +1,176 @@
+.header {
+    background: var(--primary);
+    padding: 26px;
+    display: flex;
+    justify-content: space-between;
+    border-radius: 0 0 24px 24px;
+}
+
+.links {
+    display: flex;
+    gap: 8px;
+}
+
+.link {
+    text-decoration: underline;
+    color: #fff;
+    font-size: 1.2rem;
+    border-radius: 12px;
+    padding: 8px;
+}
+
+.link:hover,
+.link:focus {
+    background-color: #2b3683;
+}
+
+.main {
+    margin-top: 20px;
+}
+
+.dialog {
+    top: 10vh;
+    height: max-content;
+    padding: 31px 15px;
+}
+
+.dialog::backdrop {
+    background: rgb(190 190 190 / 50%);
+}
+
+.form {
+    display: flex;
+    flex-direction: column;
+    gap: 20px
+}
+
+.fieldset {
+    padding: 16px;
+    display: grid;
+    gap: 8px;
+}
+
+.fieldset.fullname {
+    grid-template-columns: 1fr 1fr 1fr;
+}
+
+.fieldset.range {
+    grid-template-columns: 1fr 1fr;
+}
+
+.fieldset.sciences {
+    grid-template-columns: 1fr 1fr 1fr 1fr;
+}
+
+.loger {
+    text-align: center;
+}
+
+.range-input {
+    margin-top: 6px;
+    width: 100%;
+}
+
+.science {
+    display: inline-flex;
+    align-items: center;
+    gap: 5px
+}
+
+.science [type="checkbox"] {
+    --size: 18px;
+    height: var(--size);
+    width: var(--size);
+}
+
+.buttons {
+    display: flex;
+    justify-content: flex-end;
+    gap: 8px;
+}
+
+.button {
+    color: #fff;
+    background-color: var(--primary);
+    padding: 10px;
+    border-radius: 5px;
+}
+
+.filter-button {
+    border: 3px solid var(--secondary);
+    padding: 4px;
+}
+
+.h2 {
+    margin-top: 10px;
+    font-weight: bold;
+    text-align: center;
+    font-size: 1.3rem;
+}
+
+table {
+    margin-top: 10px;
+    table-layout: fixed;
+    width: 100%;
+    border-spacing: 0;
+    background-color: #cedcf0;
+    border-radius: 10px;
+}
+
+th {
+    font-weight: bold;
+    border-top: 0;
+}
+
+td:nth-child(3n + 1),
+th:nth-child(3n + 1) {
+    width: 30%;
+}
+
+td:nth-child(3n + 2),
+th:nth-child(3n + 2) {
+    width: 10%;
+}
+
+td:nth-child(3n + 3),
+th:nth-child(3n + 3) {
+    width: 60%;
+}
+
+td,
+th {
+    text-align: center;
+    padding: 8px;
+}
+
+th:first-child {
+    border-left: 0;
+}
+
+th:last-child {
+    border-right: 0;
+}
+
+tbody tr:last-child>* {
+    border-bottom: 0;
+}
+
+td:nth-child(4n + 1) {
+    border-left: 0;
+}
+
+td:nth-child(4n + 4) {
+    border-right: 0;
+}
+
+tr:nth-child(2n + 1) {
+    background-color: white;
+}
+
+thead>tr {
+    background-color: transparent !important;
+}
+
+.link-to-child {
+    text-decoration: underline;
+}

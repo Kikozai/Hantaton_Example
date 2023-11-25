@@ -1,0 +1,161 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Поиск</title>
+    <link rel="shortcut icon" href="../static/assets/star.ico" type="image/x-icon">
+    <link rel="stylesheet" href="../static/css/reset.css">
+    <link rel="stylesheet" href="../static/css/fonts.css">
+    <link rel="stylesheet" href="../static/css/index.css">
+    <link rel="stylesheet" href="../static/css/search.css">
+    <script src="../static/js/search.js" defer></script>
+</head>
+
+<body>
+    <div class="container">
+        <header class="header">
+            <a href="/" class="link">Главная</a>
+            <div class="links">
+                {% if id %}
+                <a href="/child?id={{ id }}">Личный кабинет</a>
+                {% else %}
+                <a href="/login" class="link">Войти</a>
+                <a href="/register" class="link">Зарегистрироваться</a>
+                {% endif %}
+            </div>
+        </header>
+        <main class="main">
+            <dialog class="dialog" id="fitler-window">
+                <form action="/search" class="form">
+                    <fieldset class="fieldset fullname">
+                        <legend>ФИО:</legend>
+                        <input type="text" name="secondName" value="{{ secondName }}" class="text-input" placeholder="Фамилия">
+                        <input type="text" name="firstName" value="{{ firstName }}" class="text-input" placeholder="Имя">
+                        <input type="text" name="surname" value="{{ surname }}" class="text-input" placeholder="Отчество">
+                    </fieldset>
+                    <fieldset class="fieldset range">
+                        <legend>Возрастная категория:</legend>
+                        <div>
+                            <p class="loger">От <span id="min-age-log">{{ minAge }}</span></p>
+                            <input type="range" name="minAge" id="min-age-input" class="range-input" value="{{ minAge }}" min="4" max="{{ maxAge }}" step="1">
+                        </div>
+                        <div>
+                            <p class="loger">До <span id="max-age-log">25</span></p>
+                            <input type="range" name="maxAge" id="max-age-input" class="range-input" value="{{ maxAge }}" min="{{ minAge }}" max="25" step="1">
+                        </div>
+                    </fieldset>
+                    <fieldset class="fieldset sciences">
+                        <legend>Предметы:</legend>
+                        <label class="science">
+                            <input type="checkbox" {% if 'Русский' in sciences % }checked{% endif %} name="science" value="Русский">
+                            <span>Русский</span>
+                        </label>
+                
+                        <label class="science">
+                            <input type="checkbox" {% if 'Математика' in sciences % }checked{% endif %} name="science" value="Математика">
+                            <span>Математика</span>
+                        </label>
+                
+                        <label class="science">
+                            <input type="checkbox" {% if 'Физика' in sciences % }checked{% endif %} name="science" value="Физика">
+                            <span>Физика</span>
+                        </label>
+                
+                        <label class="science">
+                            <input type="checkbox" {% if 'Химия' in sciences % }checked{% endif %} name="science" value="Химия">
+                            <span>Химия</span>
+                        </label>
+                
+                        <label class="science">
+                            <input type="checkbox" {% if 'История' in sciences % }checked{% endif %} name="science" value="История">
+                            <span>История</span>
+                        </label>
+                
+                        <label class="science">
+                            <input type="checkbox" {% if 'Обществознание' in sciences % }checked{% endif %} name="science" value="Обществознание">
+                            <span>Обществознание</span>
+                        </label>
+                
+                        <label class="science">
+                            <input type="checkbox" {% if 'Информатика' in sciences % }checked{% endif %} name="science" value="Информатика">
+                            <span>Информатика</span>
+                        </label>
+                
+                        <label class="science">
+                            <input type="checkbox" {% if 'Биология' in sciences % }checked{% endif %} name="science" value="Биология">
+                            <span>Биология</span>
+                        </label>
+                
+                        <label class="science">
+                            <input type="checkbox" {% if 'География' in sciences % }checked{% endif %} name="science" value="География">
+                            <span>География</span>
+                        </label>
+                
+                        <label class="science">
+                            <input type="checkbox" {% if 'Английский язык' in sciences % }checked{% endif %} name="science" value="Английский язык">
+                            <span>Английский язык</span>
+                        </label>
+                
+                        <label class="science">
+                            <input type="checkbox" {% if 'Немецкий язык' in sciences % }checked{% endif %} name="science" value="Немецкий язык">
+                            <span>Немецкий язык</span>
+                        </label>
+                
+                        <label class="science">
+                            <input type="checkbox" {% if 'Французкий язык' in sciences % }checked{% endif %} name="science" value="Французкий язык">
+                            <span>Французкий язык</span>
+                        </label>
+                
+                        <label class="science">
+                            <input type="checkbox" {% if 'Испанский язык' in sciences % }checked{% endif %} name="science" value="Испанский язык">
+                            <span>Испанский язык</span>
+                        </label>
+                
+                        <label class="science">
+                            <input type="checkbox" {% if 'Китайский язык' in sciences % }checked{% endif %} name="science" value="Китайский язык">
+                            <span>Китайский язык</span>
+                        </label>
+                
+                        <label class="science">
+                            <input type="checkbox" {% if 'Литература' in sciences % }checked{% endif %} name="science" value="Литература">
+                            <span>Литература</span>
+                        </label>
+                    </fieldset>
+                    <menu class="buttons">
+                        <button class="button" type="button" id="close-dialog-button">Закрыть</button>
+                        <button class="button" type="submit">Фильтровать</button>
+                    </menu>
+                </form>
+            </dialog>
+            <menu>
+                <button id="open-fitler-window" class="filter-button">Фильтры</button>
+            </menu>
+            {% if children %}
+            <table>
+                <thead>
+                    <tr>
+                        <th>ФИО</th>
+                        <th>Возраст</th>
+                        <th>Сильные стороны</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    {% for child in children %}
+                    <tr>
+                        <td><a href="/child?id={{ child.id }}" class="link-to-child">{{ child.secondName }} {{ child.firstName }} {{ child.surname }}</a></td>
+                        <td>{{ child.age }}</td>
+                        <td>{{ child.sciences }}</td>
+                    </tr>
+                    {% endfor %}
+                </tbody>
+            </table>
+            {% else %}
+            <h2 class="h2">Никого не найдено...</h2>
+            {% endif %}
+        </main>
+    </div>
+</body>
+
+</html>
